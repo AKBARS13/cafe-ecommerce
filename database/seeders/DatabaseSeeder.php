@@ -23,8 +23,8 @@ class DatabaseSeeder extends Seeder
 
         // Customer
         User::create([
-            'name' => 'John Customer',
-            'email' => 'customer@cafe.com',
+            'name' => 'User',
+            'email' => 'user@cafe.com',
             'password' => Hash::make('password'),
             'role' => 'customer',
             'phone' => '081234567891',
