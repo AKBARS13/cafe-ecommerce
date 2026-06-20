@@ -31,4 +31,4 @@ RUN chmod -R 775 storage bootstrap/cache
 EXPOSE 8080
 
 # Start command
-CMD php artisan migrate --force && php artisan config:cache && php -S 0.0.0.0:$PORT -t public
+CCMD php artisan migrate --force && php artisan storage:link && php artisan config:cache && php -S 0.0.0.0:$PORT -t publicMD php artisan migrate --force && php artisan config:cache && php -S 0.0.0.0:$PORT -t public
