@@ -18,10 +18,14 @@ class AdminCafeSettingController extends BaseController
     {
         $validated = $request->validate([
             'cafe_name' => 'required|string|max:255',
+            'cafe_description' => 'nullable|string|max:500',
             'cafe_address' => 'nullable|string',
             'cafe_phone' => 'nullable|string|max:20',
+            'cafe_email' => 'nullable|email|max:255',
             'open_time' => 'required|date_format:H:i',
             'close_time' => 'required|date_format:H:i|after:open_time',
+            'weekend_open_time' => 'nullable|date_format:H:i',
+            'weekend_close_time' => 'nullable|date_format:H:i|after:weekend_open_time',
             'accept_reservation' => 'boolean',
             'reservation_start_time' => 'required|date_format:H:i',
             'reservation_end_time' => 'required|date_format:H:i',

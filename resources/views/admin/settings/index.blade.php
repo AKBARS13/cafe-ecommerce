@@ -25,23 +25,35 @@
                             @enderror
                         </div>
                         <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Deskripsi Cafe</label>
+                            <textarea name="cafe_description" rows="2" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500">{{ old('cafe_description', $setting->cafe_description) }}</textarea>
+                            <p class="text-xs text-gray-500 mt-1">Akan ditampilkan di footer website</p>
+                        </div>
+                        <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Alamat</label>
                             <textarea name="cafe_address" rows="2" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500">{{ old('cafe_address', $setting->cafe_address) }}</textarea>
                         </div>
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">Nomor Telepon</label>
-                            <input type="text" name="cafe_phone" value="{{ old('cafe_phone', $setting->cafe_phone) }}"
-                                class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">Nomor Telepon</label>
+                                <input type="text" name="cafe_phone" value="{{ old('cafe_phone', $setting->cafe_phone) }}"
+                                    class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">Email</label>
+                                <input type="email" name="cafe_email" value="{{ old('cafe_email', $setting->cafe_email) }}"
+                                    class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                            </div>
                         </div>
                     </div>
                 </div>
 
                 <hr>
 
-                {{-- Jam Operasional --}}
+                {{-- Jam Operasional Weekday --}}
                 <div>
-                    <h3 class="text-lg font-bold text-gray-800 mb-4"><i class="fas fa-clock mr-2 text-amber-500"></i> Jam Operasional</h3>
-                    <p class="text-sm text-gray-500 mb-4">Jam ini berlaku untuk pesanan <strong>Dine-in</strong> dan <strong>Takeaway</strong>.</p>
+                    <h3 class="text-lg font-bold text-gray-800 mb-4"><i class="fas fa-clock mr-2 text-amber-500"></i> Jam Operasional (Senin - Jumat)</h3>
+                    <p class="text-sm text-gray-500 mb-4">Jam ini berlaku untuk pesanan <strong>Dine-in</strong> dan <strong>Takeaway</strong> di hari kerja.</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Jam Buka *</label>
@@ -58,6 +70,26 @@
                             @error('close_time')
                                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
                             @enderror
+                        </div>
+                    </div>
+                </div>
+
+                <hr>
+
+                {{-- Jam Operasional Weekend --}}
+                <div>
+                    <h3 class="text-lg font-bold text-gray-800 mb-4"><i class="fas fa-calendar-week mr-2 text-amber-500"></i> Jam Operasional (Sabtu - Minggu)</h3>
+                    <p class="text-sm text-gray-500 mb-4">Khusus untuk akhir pekan. Kosongkan kalau sama dengan weekday.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Jam Buka Weekend</label>
+                            <input type="time" name="weekend_open_time" value="{{ old('weekend_open_time', $setting->weekend_open_time ? date('H:i', strtotime($setting->weekend_open_time)) : '') }}"
+                                class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">Jam Tutup Weekend</label>
+                            <input type="time" name="weekend_close_time" value="{{ old('weekend_close_time', $setting->weekend_close_time ? date('H:i', strtotime($setting->weekend_close_time)) : '') }}"
+                                class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500">
                         </div>
                     </div>
                 </div>

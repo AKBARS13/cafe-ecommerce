@@ -21,7 +21,7 @@
                 {{-- Logo --}}
                 <a href="{{ route('home') }}" class="flex items-center space-x-2">
                     <i class="fas fa-coffee text-amber-300 text-2xl"></i>
-                    <span class="text-xl font-bold">Cafe Kopi Nusantara</span>
+                    <span class="text-xl font-bold">{{ $cafeSetting->cafe_name ?? 'Cafe Kopi Nusantara' }}</span>
                 </a>
 
                 {{-- Nav Links --}}
@@ -133,30 +133,44 @@
     </main>
 
     {{-- Footer --}}
-    <footer class="bg-amber-900 text-white mt-12">
-        <div class="max-w-7xl mx-auto px-4 py-8">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <div>
-                    <h3 class="text-lg font-bold mb-4"><i class="fas fa-coffee mr-2"></i>Cafe Kopi Nusantara</h3>
-                    <p class="text-amber-200 text-sm">Menyajikan kopi dan makanan terbaik dengan cita rasa nusantara.</p>
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold mb-4">Jam Buka</h3>
-                    <p class="text-amber-200 text-sm">Senin - Jumat: 07:00 - 22:00</p>
-                    <p class="text-amber-200 text-sm">Sabtu - Minggu: 08:00 - 23:00</p>
-                </div>
-                <div>
-                    <h3 class="text-lg font-bold mb-4">Kontak</h3>
-                    <p class="text-amber-200 text-sm"><i class="fas fa-map-marker-alt mr-2"></i> Jl. Kopi No. 123, Jakarta</p>
-                    <p class="text-amber-200 text-sm"><i class="fas fa-phone mr-2"></i> +62 812 3456 7890</p>
-                    <p class="text-amber-200 text-sm"><i class="fas fa-envelope mr-2"></i> info@cafekopinusantara.com</p>
-                </div>
+<footer class="bg-amber-900 text-white mt-12">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <h3 class="text-lg font-bold mb-4">
+                    <i class="fas fa-coffee mr-2"></i>{{ $cafeSetting->cafe_name ?? 'Cafe Kopi Nusantara' }}
+                </h3>
+                <p class="text-amber-200 text-sm">
+                    {{ $cafeSetting->cafe_description ?? 'Menyajikan kopi dan makanan terbaik dengan cita rasa nusantara.' }}
+                </p>
             </div>
-            <div class="border-t border-amber-700 mt-8 pt-4 text-center text-amber-300 text-sm">
-                <p>&copy; {{ date('Y') }} Cafe Kopi Nusantara. All rights reserved.</p>
+            <div>
+                <h3 class="text-lg font-bold mb-4">Jam Buka</h3>
+                <p class="text-amber-200 text-sm">
+                    Senin - Jumat: {{ $cafeSetting->formatted_open_time ?? '08:00' }} - {{ $cafeSetting->formatted_close_time ?? '22:00' }}
+                </p>
+                <p class="text-amber-200 text-sm">
+                    Sabtu - Minggu: {{ $cafeSetting->formatted_weekend_open_time ?? '08:00' }} - {{ $cafeSetting->formatted_weekend_close_time ?? '23:00' }}
+                </p>
+            </div>
+            <div>
+                <h3 class="text-lg font-bold mb-4">Kontak</h3>
+                @if($cafeSetting->cafe_address ?? null)
+                    <p class="text-amber-200 text-sm"><i class="fas fa-map-marker-alt mr-2"></i> {{ $cafeSetting->cafe_address }}</p>
+                @endif
+                @if($cafeSetting->cafe_phone ?? null)
+                    <p class="text-amber-200 text-sm"><i class="fas fa-phone mr-2"></i> {{ $cafeSetting->cafe_phone }}</p>
+                @endif
+                @if($cafeSetting->cafe_email ?? null)
+                    <p class="text-amber-200 text-sm"><i class="fas fa-envelope mr-2"></i> {{ $cafeSetting->cafe_email }}</p>
+                @endif
             </div>
         </div>
-    </footer>
+        <div class="border-t border-amber-700 mt-8 pt-4 text-center text-amber-300 text-sm">
+            <p>&copy; {{ date('Y') }} {{ $cafeSetting->cafe_name ?? 'Cafe Kopi Nusantara' }}. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
 
     <script>
         // Mobile menu toggle
