@@ -7,7 +7,6 @@ use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
 
 class AdminProductController extends BaseController
 {
@@ -55,7 +54,10 @@ class AdminProductController extends BaseController
         $validated['is_featured'] = $request->has('is_featured');
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('products', 'public');
+            $uploadedFileUrl = cloudinary()->upload($request->file('image')->getRealPath(), [
+                'folder' => 'products'
+            ])->getSecurePath();
+            $validated['image'] = $uploadedFileUrl;
         }
 
         Product::create($validated);
@@ -88,10 +90,10 @@ class AdminProductController extends BaseController
         $validated['is_featured'] = $request->has('is_featured');
 
         if ($request->hasFile('image')) {
-            if ($product->image) {
-                Storage::disk('public')->delete($product->image);
-            }
-            $validated['image'] = $request->file('image')->store('products', 'public');
+            $uploadedFileUrl = cloudinary()->upload($request->file('image')->getRealPath(), [
+                'folder' => 'products'
+            ])->getSecurePath();
+            $validated['image'] = $uploadedFileUrl;
         }
 
         $product->update($validated);
@@ -101,9 +103,6 @@ class AdminProductController extends BaseController
 
     public function destroy(Product $product)
     {
-        if ($product->image) {
-            Storage::disk('public')->delete($product->image);
-        }
         $product->delete();
 
         return $this->successRedirect('admin.products.index', 'Produk berhasil dihapus!');

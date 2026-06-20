@@ -1,7 +1,7 @@
 <div class="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition transform hover:-translate-y-1">
     <a href="{{ route('products.show', $product->slug) }}">
         @if($product->image)
-            <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="w-full h-48 object-cover">
+            <img src="{{ $product->image }}" alt="{{ $product->name }}" class="w-full h-48 object-cover">
         @else
             <div class="w-full h-48 bg-amber-100 flex items-center justify-center">
                 <i class="fas fa-mug-hot text-amber-300 text-5xl"></i>

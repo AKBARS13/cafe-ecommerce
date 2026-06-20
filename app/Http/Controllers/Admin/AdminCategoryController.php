@@ -6,7 +6,6 @@ use App\Http\Controllers\BaseController;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Storage;
 
 class AdminCategoryController extends BaseController
 {
@@ -34,7 +33,10 @@ class AdminCategoryController extends BaseController
         $validated['is_active'] = $request->has('is_active');
 
         if ($request->hasFile('image')) {
-            $validated['image'] = $request->file('image')->store('categories', 'public');
+            $uploadedFileUrl = cloudinary()->upload($request->file('image')->getRealPath(), [
+                'folder' => 'categories'
+            ])->getSecurePath();
+            $validated['image'] = $uploadedFileUrl;
         }
 
         Category::create($validated);
@@ -60,10 +62,10 @@ class AdminCategoryController extends BaseController
         $validated['is_active'] = $request->has('is_active');
 
         if ($request->hasFile('image')) {
-            if ($category->image) {
-                Storage::disk('public')->delete($category->image);
-            }
-            $validated['image'] = $request->file('image')->store('categories', 'public');
+            $uploadedFileUrl = cloudinary()->upload($request->file('image')->getRealPath(), [
+                'folder' => 'categories'
+            ])->getSecurePath();
+            $validated['image'] = $uploadedFileUrl;
         }
 
         $category->update($validated);
@@ -73,9 +75,6 @@ class AdminCategoryController extends BaseController
 
     public function destroy(Category $category)
     {
-        if ($category->image) {
-            Storage::disk('public')->delete($category->image);
-        }
         $category->delete();
 
         return $this->successRedirect('admin.categories.index', 'Kategori berhasil dihapus!');

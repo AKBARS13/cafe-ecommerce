@@ -19,7 +19,7 @@
         {{-- Image --}}
         <div>
             @if($product->image)
-                <img src="{{ asset('storage/' . $product->image) }}" alt="{{ $product->name }}" class="w-full rounded-xl shadow-lg object-cover max-h-96">
+                <img src="{{ $product->image }}" alt="{{ $product->name }}" class="w-full rounded-xl shadow-lg object-cover max-h-96">
             @else
                 <div class="w-full h-96 bg-amber-100 rounded-xl flex items-center justify-center">
                     <i class="fas fa-mug-hot text-amber-300 text-8xl"></i>

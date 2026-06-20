@@ -16,9 +16,8 @@
                 @foreach($cartItems as $item)
                     <div class="bg-white rounded-xl shadow-md p-4 flex items-center space-x-4">
 
-                        {{-- Image --}}
                         @if($item->product->image)
-                            <img src="{{ asset('storage/' . $item->product->image) }}"
+                            <img src="{{ $item->product->image }}"
                                 alt="{{ $item->product->name }}"
                                 class="w-20 h-20 rounded-lg object-cover">
                         @else
@@ -27,7 +26,6 @@
                             </div>
                         @endif
 
-                        {{-- Info --}}
                         <div class="flex-1">
                             <h3 class="font-bold text-gray-800">{{ $item->product->name }}</h3>
                             <p class="text-amber-600 font-semibold">
@@ -40,7 +38,6 @@
                             @endif
                         </div>
 
-                        {{-- Quantity --}}
                         <form action="{{ route('cart.update', $item->id) }}" method="POST">
                             @csrf
                             @method('PUT')
@@ -59,7 +56,6 @@
                             </div>
                         </form>
 
-                        {{-- Subtotal & Delete --}}
                         <div class="text-right">
                             <p class="font-bold text-gray-800">
                                 Rp {{ number_format($item->subtotal, 0, ',', '.') }}
@@ -76,7 +72,6 @@
                     </div>
                 @endforeach
 
-                {{-- Clear Cart --}}
                 <div class="text-right">
                     <form action="{{ route('cart.clear') }}" method="POST">
                         @csrf
@@ -90,7 +85,6 @@
                 </div>
             </div>
 
-            {{-- Order Summary --}}
             <div>
                 <div class="bg-white rounded-xl shadow-md p-6 sticky top-24">
                     <h2 class="text-xl font-bold text-gray-800 mb-4">Ringkasan Pesanan</h2>
@@ -127,7 +121,6 @@
 
         </div>
     @else
-        {{-- Empty Cart --}}
         <div class="text-center py-16">
             <i class="fas fa-shopping-cart text-gray-300 text-6xl mb-4"></i>
             <p class="text-gray-500 text-lg mb-4">Keranjang belanja Anda kosong</p>

@@ -34,7 +34,7 @@
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Gambar</label>
                     @if($category->image)
-                        <img src="{{ asset('storage/' . $category->image) }}"
+                        <img src="{{ $category->image }}"
                             class="w-20 h-20 rounded-lg object-cover mb-2">
                     @endif
                     <input type="file" name="image" accept="image/*"

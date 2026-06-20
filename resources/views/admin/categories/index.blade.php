@@ -30,7 +30,7 @@
                     <td class="px-6 py-4">
                         <div class="flex items-center space-x-3">
                             @if($category->image)
-                                <img src="{{ asset('storage/' . $category->image) }}"
+                                <img src="{{ $category->image }}"
                                     class="w-10 h-10 rounded-lg object-cover">
                             @else
                                 <div class="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center">

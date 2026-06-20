@@ -77,7 +77,7 @@
                     <div>
                         <label class="block text-sm font-semibold text-gray-700 mb-1">Gambar</label>
                         @if($product->image)
-                            <img src="{{ asset('storage/' . $product->image) }}"
+                            <img src="{{ $product->image }}"
                                 class="w-20 h-20 rounded-lg object-cover mb-2">
                         @endif
                         <input type="file" name="image" accept="image/*"

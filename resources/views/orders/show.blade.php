@@ -5,7 +5,6 @@
 @section('content')
 <div class="max-w-4xl mx-auto px-4 py-8">
 
-    {{-- Header --}}
     <div class="flex items-center justify-between mb-6">
         <div>
             <h1 class="text-3xl font-bold text-gray-800">{{ $order->order_number }}</h1>
@@ -18,7 +17,6 @@
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
 
-        {{-- Order Info --}}
         <div class="bg-white rounded-xl shadow-md p-6">
             <h2 class="font-bold text-lg text-gray-800 mb-4">Informasi Pesanan</h2>
             <div class="space-y-2 text-sm">
@@ -63,7 +61,6 @@
             </div>
         </div>
 
-        {{-- Customer Info --}}
         <div class="bg-white rounded-xl shadow-md p-6">
             <h2 class="font-bold text-lg text-gray-800 mb-4">Informasi Pelanggan</h2>
             <div class="space-y-2 text-sm">
@@ -88,7 +85,6 @@
 
     </div>
 
-    {{-- Order Items --}}
     <div class="bg-white rounded-xl shadow-md p-6 mb-6">
         <h2 class="font-bold text-lg text-gray-800 mb-4">Item Pesanan</h2>
         <div class="space-y-3">
@@ -96,7 +92,7 @@
                 <div class="flex items-center justify-between py-3 border-b last:border-0">
                     <div class="flex items-center space-x-4">
                         @if($item->product && $item->product->image)
-                            <img src="{{ asset('storage/' . $item->product->image) }}"
+                            <img src="{{ $item->product->image }}"
                                 alt="{{ $item->product_name }}"
                                 class="w-12 h-12 rounded-lg object-cover">
                         @else
@@ -124,7 +120,6 @@
         </div>
     </div>
 
-    {{-- Payment Summary --}}
     <div class="bg-white rounded-xl shadow-md p-6">
         <h2 class="font-bold text-lg text-gray-800 mb-4">Ringkasan Pembayaran</h2>
         <div class="space-y-2 text-sm">

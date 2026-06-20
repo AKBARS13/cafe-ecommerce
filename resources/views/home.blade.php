@@ -4,7 +4,6 @@
 
 @section('content')
 
-{{-- Hero Section --}}
 <section class="relative bg-gradient-to-r from-amber-900 via-amber-800 to-amber-900 text-white">
     <div class="max-w-7xl mx-auto px-4 py-20 md:py-32">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
@@ -33,7 +32,6 @@
     </div>
 </section>
 
-{{-- Features --}}
 <section class="py-12 bg-white">
     <div class="max-w-7xl mx-auto px-4">
         <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
@@ -69,7 +67,6 @@
     </div>
 </section>
 
-{{-- Categories --}}
 @if($categories->count() > 0)
 <section class="py-12 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4">
@@ -81,7 +78,7 @@
             @foreach($categories as $category)
                 <a href="{{ route('products.index', ['category' => $category->slug]) }}" class="bg-white rounded-xl shadow-md p-6 text-center hover:shadow-xl transition transform hover:-translate-y-1">
                     @if($category->image)
-                        <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="w-20 h-20 object-cover rounded-full mx-auto mb-4">
+                        <img src="{{ $category->image }}" alt="{{ $category->name }}" class="w-20 h-20 object-cover rounded-full mx-auto mb-4">
                     @else
                         <div class="w-20 h-20 bg-amber-100 rounded-full flex items-center justify-center mx-auto mb-4">
                             <i class="fas fa-utensils text-amber-600 text-2xl"></i>
@@ -96,7 +93,6 @@
 </section>
 @endif
 
-{{-- Featured Products --}}
 @if($featuredProducts->count() > 0)
 <section class="py-12 bg-white">
     <div class="max-w-7xl mx-auto px-4">
@@ -113,7 +109,6 @@
 </section>
 @endif
 
-{{-- Latest Products --}}
 @if($latestProducts->count() > 0)
 <section class="py-12 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4">

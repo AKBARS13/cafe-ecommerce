@@ -12,10 +12,8 @@
 
 <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-    {{-- Kiri: Items & Status Update --}}
     <div class="md:col-span-2 space-y-6">
 
-        {{-- Update Status --}}
         <div class="bg-white rounded-xl shadow-md p-6">
             <h2 class="font-bold text-lg text-gray-800 mb-4">Update Status Pesanan</h2>
             <form action="{{ route('admin.orders.updateStatus', $order->id) }}" method="POST"
@@ -38,7 +36,6 @@
             </form>
         </div>
 
-        {{-- Order Items --}}
         <div class="bg-white rounded-xl shadow-md p-6">
             <h2 class="font-bold text-lg text-gray-800 mb-4">Item Pesanan</h2>
             <div class="space-y-3">
@@ -46,7 +43,7 @@
                     <div class="flex items-center justify-between py-3 border-b last:border-0">
                         <div class="flex items-center space-x-4">
                             @if($item->product && $item->product->image)
-                                <img src="{{ asset('storage/' . $item->product->image) }}"
+                                <img src="{{ $item->product->image }}"
                                     class="w-12 h-12 rounded-lg object-cover">
                             @else
                                 <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
@@ -75,10 +72,8 @@
 
     </div>
 
-    {{-- Kanan: Info & Summary --}}
     <div class="space-y-6">
 
-        {{-- Order Info --}}
         <div class="bg-white rounded-xl shadow-md p-6">
             <h2 class="font-bold text-lg text-gray-800 mb-4">Info Pesanan</h2>
             <div class="space-y-2 text-sm">
@@ -144,7 +139,6 @@
             </div>
         </div>
 
-        {{-- Payment Summary --}}
         <div class="bg-white rounded-xl shadow-md p-6">
             <h2 class="font-bold text-lg text-gray-800 mb-4">Ringkasan</h2>
             <div class="space-y-2 text-sm">
