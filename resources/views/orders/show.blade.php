@@ -25,7 +25,6 @@
                     <span class="px-3 py-1 rounded-full text-xs font-semibold
                         @if($order->status_color === 'yellow') bg-yellow-100 text-yellow-800
                         @elseif($order->status_color === 'blue') bg-blue-100 text-blue-800
-                        @elseif($order->status_color === 'indigo') bg-indigo-100 text-indigo-800
                         @elseif($order->status_color === 'green') bg-green-100 text-green-800
                         @elseif($order->status_color === 'red') bg-red-100 text-red-800
                         @else bg-gray-100 text-gray-800
@@ -35,28 +34,39 @@
                 </div>
                 <div class="flex justify-between">
                     <span class="text-gray-600">Status Bayar</span>
-                    <span class="px-3 py-1 rounded-full text-xs font-semibold
-                        {{ $order->payment_status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                    <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $order->payment_status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
                         {{ $order->payment_status_label }}
                     </span>
                 </div>
                 <div class="flex justify-between">
                     <span class="text-gray-600">Tipe Pesanan</span>
-                    <span class="font-semibold">
-                        {{ $order->order_type === 'dine_in' ? 'Makan di Tempat' : 'Takeaway' }}
-                    </span>
+                    <span class="font-semibold">{{ $order->order_type_label }}</span>
                 </div>
+                @if($order->reservation_date)
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Tanggal Datang</span>
+                        <span class="font-semibold">{{ $order->reservation_date->format('d M Y') }}</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Jam Datang</span>
+                        <span class="font-semibold">{{ date('H:i', strtotime($order->reservation_time)) }}</span>
+                    </div>
+                @endif
+                @if($order->guest_count > 1)
+                    <div class="flex justify-between">
+                        <span class="text-gray-600">Jumlah Tamu</span>
+                        <span class="font-semibold">{{ $order->guest_count }} orang</span>
+                    </div>
+                @endif
                 @if($order->table_number)
                     <div class="flex justify-between">
                         <span class="text-gray-600">Nomor Meja</span>
-                        <span class="font-semibold">{{ $order->table_number }}</span>
+                        <span class="font-semibold bg-green-100 text-green-800 px-2 py-1 rounded">{{ $order->table_number }}</span>
                     </div>
                 @endif
                 <div class="flex justify-between">
                     <span class="text-gray-600">Metode Bayar</span>
-                    <span class="font-semibold capitalize">
-                        {{ str_replace('_', ' ', $order->payment_method) }}
-                    </span>
+                    <span class="font-semibold capitalize">{{ str_replace('_', ' ', $order->payment_method) }}</span>
                 </div>
             </div>
         </div>
@@ -92,9 +102,7 @@
                 <div class="flex items-center justify-between py-3 border-b last:border-0">
                     <div class="flex items-center space-x-4">
                         @if($item->product && $item->product->image)
-                            <img src="{{ $item->product->image }}"
-                                alt="{{ $item->product_name }}"
-                                class="w-12 h-12 rounded-lg object-cover">
+                            <img src="{{ $item->product->image }}" class="w-12 h-12 rounded-lg object-cover">
                         @else
                             <div class="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
                                 <i class="fas fa-mug-hot text-amber-300"></i>
@@ -102,19 +110,13 @@
                         @endif
                         <div>
                             <p class="font-semibold text-gray-800">{{ $item->product_name }}</p>
-                            <p class="text-sm text-gray-500">
-                                Rp {{ number_format($item->price, 0, ',', '.') }} x {{ $item->quantity }}
-                            </p>
+                            <p class="text-sm text-gray-500">Rp {{ number_format($item->price, 0, ',', '.') }} x {{ $item->quantity }}</p>
                             @if($item->notes)
-                                <p class="text-xs text-gray-400">
-                                    <i class="fas fa-sticky-note mr-1"></i> {{ $item->notes }}
-                                </p>
+                                <p class="text-xs text-gray-400"><i class="fas fa-sticky-note mr-1"></i> {{ $item->notes }}</p>
                             @endif
                         </div>
                     </div>
-                    <span class="font-bold text-gray-800">
-                        Rp {{ number_format($item->subtotal, 0, ',', '.') }}
-                    </span>
+                    <span class="font-bold text-gray-800">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</span>
                 </div>
             @endforeach
         </div>
@@ -131,18 +133,10 @@
                 <span class="text-gray-600">PPN</span>
                 <span class="font-semibold">Rp {{ number_format($order->tax, 0, ',', '.') }}</span>
             </div>
-            @if($order->discount > 0)
-                <div class="flex justify-between text-green-600">
-                    <span>Diskon</span>
-                    <span class="font-semibold">- Rp {{ number_format($order->discount, 0, ',', '.') }}</span>
-                </div>
-            @endif
             <hr>
             <div class="flex justify-between text-lg">
                 <span class="font-bold text-gray-800">Total Bayar</span>
-                <span class="font-bold text-amber-600">
-                    Rp {{ number_format($order->total_amount, 0, ',', '.') }}
-                </span>
+                <span class="font-bold text-amber-600">Rp {{ number_format($order->total_amount, 0, ',', '.') }}</span>
             </div>
         </div>
     </div>

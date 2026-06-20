@@ -11,6 +11,8 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\AdminProductController;
 use App\Http\Controllers\Admin\AdminCategoryController;
 use App\Http\Controllers\Admin\AdminOrderController;
+use App\Http\Controllers\Admin\AdminTableController;
+use App\Http\Controllers\Admin\AdminCafeSettingController;
 
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -55,8 +57,18 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Category Management
     Route::resource('categories', AdminCategoryController::class);
 
+    // Table Management
+    Route::resource('tables', AdminTableController::class);
+    Route::put('/tables/{table}/status', [AdminTableController::class, 'updateStatus'])->name('tables.updateStatus');
+
+    // Cafe Settings
+    Route::get('/settings', [AdminCafeSettingController::class, 'index'])->name('settings.index');
+    Route::put('/settings', [AdminCafeSettingController::class, 'update'])->name('settings.update');
+
     // Order Management
     Route::get('/orders', [AdminOrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{orderId}', [AdminOrderController::class, 'show'])->name('orders.show');
     Route::put('/orders/{orderId}/status', [AdminOrderController::class, 'updateStatus'])->name('orders.updateStatus');
+    Route::put('/orders/{orderId}/assign-table', [AdminOrderController::class, 'assignTable'])->name('orders.assignTable');
+    Route::delete('/orders/{orderId}/release-table', [AdminOrderController::class, 'releaseTable'])->name('orders.releaseTable');
 });

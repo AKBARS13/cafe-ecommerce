@@ -33,7 +33,7 @@ class OrderService implements OrderInterface
             $discount = 0;
             $totalAmount = $subtotal + $tax - $discount;
 
-            $order = Order::create([
+            $orderData = [
                 'order_number' => Order::generateOrderNumber(),
                 'user_id' => $user->id,
                 'subtotal' => $subtotal,
@@ -44,11 +44,23 @@ class OrderService implements OrderInterface
                 'payment_method' => $data['payment_method'] ?? 'cash',
                 'payment_status' => 'unpaid',
                 'order_type' => $data['order_type'] ?? 'dine_in',
-                'table_number' => $data['table_number'] ?? null,
                 'notes' => $data['notes'] ?? null,
                 'customer_name' => $data['customer_name'] ?? $user->name,
                 'customer_phone' => $data['customer_phone'] ?? $user->phone,
-            ]);
+            ];
+
+            // Tambah field reservasi jika ada
+            if (!empty($data['reservation_date'])) {
+                $orderData['reservation_date'] = $data['reservation_date'];
+            }
+            if (!empty($data['reservation_time'])) {
+                $orderData['reservation_time'] = $data['reservation_time'];
+            }
+            if (!empty($data['guest_count'])) {
+                $orderData['guest_count'] = $data['guest_count'];
+            }
+
+            $order = Order::create($orderData);
 
             foreach ($cartItems as $cartItem) {
                 OrderItem::create([
@@ -80,6 +92,12 @@ class OrderService implements OrderInterface
     {
         $order = Order::findOrFail($orderId);
         $order->update(['status' => $status]);
+
+        // Kalau order completed/cancelled, otomatis kosongkan meja
+        if (in_array($status, ['completed', 'cancelled']) && $order->table) {
+            $order->table->update(['status' => 'available']);
+        }
+
         return $order;
     }
 
@@ -93,6 +111,6 @@ class OrderService implements OrderInterface
 
     public function getOrderDetail(int $orderId): mixed
     {
-        return Order::with(['items.product', 'user'])->findOrFail($orderId);
+        return Order::with(['items.product', 'user', 'table'])->findOrFail($orderId);
     }
 }

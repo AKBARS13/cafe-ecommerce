@@ -82,5 +82,35 @@ class DatabaseSeeder extends Seeder
         foreach ($products as $product) {
             Product::create($product);
         }
+
+        // Tambah Cafe Settings
+        \App\Models\CafeSetting::create([
+            'open_time' => '08:00:00',
+            'close_time' => '22:00:00',
+            'accept_reservation' => true,
+            'reservation_start_time' => '00:00:00',
+            'reservation_end_time' => '23:59:59',
+            'max_reservation_days' => 7,
+            'cafe_name' => 'Cafe Kopi Nusantara',
+            'cafe_address' => 'Jl. Kopi No. 123, Jakarta',
+            'cafe_phone' => '+62 812 3456 7890',
+        ]);
+
+        // Tambah Meja
+        $tables = [
+            ['table_number' => 'A1', 'capacity' => 2, 'location' => 'indoor', 'status' => 'available'],
+            ['table_number' => 'A2', 'capacity' => 2, 'location' => 'indoor', 'status' => 'available'],
+            ['table_number' => 'A3', 'capacity' => 4, 'location' => 'indoor', 'status' => 'available'],
+            ['table_number' => 'A4', 'capacity' => 4, 'location' => 'indoor', 'status' => 'available'],
+            ['table_number' => 'B1', 'capacity' => 6, 'location' => 'indoor', 'status' => 'available'],
+            ['table_number' => 'B2', 'capacity' => 6, 'location' => 'indoor', 'status' => 'available'],
+            ['table_number' => 'C1', 'capacity' => 4, 'location' => 'outdoor', 'status' => 'available'],
+            ['table_number' => 'C2', 'capacity' => 4, 'location' => 'outdoor', 'status' => 'available'],
+            ['table_number' => 'C3', 'capacity' => 8, 'location' => 'outdoor', 'status' => 'available'],
+        ];
+
+        foreach ($tables as $table) {
+            \App\Models\Table::create($table);
+        }
     }
 }

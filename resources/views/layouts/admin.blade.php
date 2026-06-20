@@ -15,7 +15,7 @@
     <div class="flex min-h-screen">
 
         {{-- Sidebar --}}
-        <aside class="w-64 bg-amber-900 text-white min-h-screen fixed left-0 top-0 z-40">
+        <aside class="w-64 bg-amber-900 text-white min-h-screen fixed left-0 top-0 z-40 overflow-y-auto">
             <div class="p-6">
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center space-x-2">
                     <i class="fas fa-coffee text-amber-300 text-2xl"></i>
@@ -23,7 +23,7 @@
                 </a>
             </div>
 
-            <nav class="mt-6">
+            <nav class="mt-6 pb-6">
                 <a href="{{ route('admin.dashboard') }}" class="flex items-center px-6 py-3 hover:bg-amber-800 transition {{ request()->routeIs('admin.dashboard') ? 'bg-amber-800 border-r-4 border-amber-300' : '' }}">
                     <i class="fas fa-tachometer-alt w-5 mr-3"></i> Dashboard
                 </a>
@@ -33,8 +33,14 @@
                 <a href="{{ route('admin.products.index') }}" class="flex items-center px-6 py-3 hover:bg-amber-800 transition {{ request()->routeIs('admin.products.*') ? 'bg-amber-800 border-r-4 border-amber-300' : '' }}">
                     <i class="fas fa-mug-hot w-5 mr-3"></i> Produk
                 </a>
+                <a href="{{ route('admin.tables.index') }}" class="flex items-center px-6 py-3 hover:bg-amber-800 transition {{ request()->routeIs('admin.tables.*') ? 'bg-amber-800 border-r-4 border-amber-300' : '' }}">
+                    <i class="fas fa-chair w-5 mr-3"></i> Meja
+                </a>
                 <a href="{{ route('admin.orders.index') }}" class="flex items-center px-6 py-3 hover:bg-amber-800 transition {{ request()->routeIs('admin.orders.*') ? 'bg-amber-800 border-r-4 border-amber-300' : '' }}">
                     <i class="fas fa-receipt w-5 mr-3"></i> Pesanan
+                </a>
+                <a href="{{ route('admin.settings.index') }}" class="flex items-center px-6 py-3 hover:bg-amber-800 transition {{ request()->routeIs('admin.settings.*') ? 'bg-amber-800 border-r-4 border-amber-300' : '' }}">
+                    <i class="fas fa-cog w-5 mr-3"></i> Pengaturan
                 </a>
 
                 <hr class="border-amber-700 my-4 mx-6">

@@ -16,6 +16,10 @@ class Order extends BaseModel
         'payment_status',
         'order_type',
         'table_number',
+        'reservation_date',
+        'reservation_time',
+        'guest_count',
+        'table_id',
         'notes',
         'customer_name',
         'customer_phone',
@@ -28,6 +32,7 @@ class Order extends BaseModel
         'discount' => 'decimal:2',
         'total_amount' => 'decimal:2',
         'paid_at' => 'datetime',
+        'reservation_date' => 'date',
     ];
 
     public function getDisplayName(): string
@@ -48,6 +53,11 @@ class Order extends BaseModel
     public function items()
     {
         return $this->hasMany(OrderItem::class);
+    }
+
+    public function table()
+    {
+        return $this->belongsTo(Table::class);
     }
 
     public function getStatusLabelAttribute(): string
@@ -87,6 +97,26 @@ class Order extends BaseModel
         ];
 
         return $labels[$this->payment_status] ?? $this->payment_status;
+    }
+
+    public function getOrderTypeLabelAttribute(): string
+    {
+        $labels = [
+            'dine_in' => 'Makan di Tempat',
+            'takeaway' => 'Takeaway',
+            'reservation' => 'Reservasi',
+        ];
+
+        return $labels[$this->order_type] ?? $this->order_type;
+    }
+
+    public function getFormattedReservationAttribute(): string
+    {
+        if (!$this->reservation_date || !$this->reservation_time) {
+            return '-';
+        }
+
+        return $this->reservation_date->format('d M Y') . ' jam ' . date('H:i', strtotime($this->reservation_time));
     }
 
     public static function generateOrderNumber(): string
