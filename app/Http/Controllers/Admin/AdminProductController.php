@@ -7,9 +7,24 @@ use App\Models\Product;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Cloudinary\Cloudinary;
 
 class AdminProductController extends BaseController
 {
+    private function getCloudinary()
+    {
+        return new Cloudinary([
+            'cloud' => [
+                'cloud_name' => 'dohbxopsh',
+                'api_key' => '619143837518466',
+                'api_secret' => 'mL7LUpRY7_OljTEUbj-0pJiqxQw',
+            ],
+            'url' => [
+                'secure' => true,
+            ],
+        ]);
+    }
+
     public function index(Request $request)
     {
         $query = Product::with('category');
@@ -54,10 +69,12 @@ class AdminProductController extends BaseController
         $validated['is_featured'] = $request->has('is_featured');
 
         if ($request->hasFile('image')) {
-            $uploadedFileUrl = cloudinary()->upload($request->file('image')->getRealPath(), [
-                'folder' => 'products'
-            ])->getSecurePath();
-            $validated['image'] = $uploadedFileUrl;
+            $cloudinary = $this->getCloudinary();
+            $result = $cloudinary->uploadApi()->upload(
+                $request->file('image')->getRealPath(),
+                ['folder' => 'products']
+            );
+            $validated['image'] = $result['secure_url'];
         }
 
         Product::create($validated);
@@ -95,10 +112,12 @@ class AdminProductController extends BaseController
         }
 
         if ($request->hasFile('image')) {
-            $uploadedFileUrl = cloudinary()->upload($request->file('image')->getRealPath(), [
-                'folder' => 'products'
-            ])->getSecurePath();
-            $validated['image'] = $uploadedFileUrl;
+            $cloudinary = $this->getCloudinary();
+            $result = $cloudinary->uploadApi()->upload(
+                $request->file('image')->getRealPath(),
+                ['folder' => 'products']
+            );
+            $validated['image'] = $result['secure_url'];
         }
 
         $product->update($validated);

@@ -6,9 +6,24 @@ use App\Http\Controllers\BaseController;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use Cloudinary\Cloudinary;
 
 class AdminCategoryController extends BaseController
 {
+    private function getCloudinary()
+    {
+        return new Cloudinary([
+            'cloud' => [
+                'cloud_name' => 'dohbxopsh',
+                'api_key' => '619143837518466',
+                'api_secret' => 'mL7LUpRY7_OljTEUbj-0pJiqxQw',
+            ],
+            'url' => [
+                'secure' => true,
+            ],
+        ]);
+    }
+
     public function index()
     {
         $categories = Category::withCount('products')->latest()->paginate(15);
@@ -33,10 +48,12 @@ class AdminCategoryController extends BaseController
         $validated['is_active'] = $request->has('is_active');
 
         if ($request->hasFile('image')) {
-            $uploadedFileUrl = cloudinary()->upload($request->file('image')->getRealPath(), [
-                'folder' => 'categories'
-            ])->getSecurePath();
-            $validated['image'] = $uploadedFileUrl;
+            $cloudinary = $this->getCloudinary();
+            $result = $cloudinary->uploadApi()->upload(
+                $request->file('image')->getRealPath(),
+                ['folder' => 'categories']
+            );
+            $validated['image'] = $result['secure_url'];
         }
 
         Category::create($validated);
@@ -67,10 +84,12 @@ class AdminCategoryController extends BaseController
         }
 
         if ($request->hasFile('image')) {
-            $uploadedFileUrl = cloudinary()->upload($request->file('image')->getRealPath(), [
-                'folder' => 'categories'
-            ])->getSecurePath();
-            $validated['image'] = $uploadedFileUrl;
+            $cloudinary = $this->getCloudinary();
+            $result = $cloudinary->uploadApi()->upload(
+                $request->file('image')->getRealPath(),
+                ['folder' => 'categories']
+            );
+            $validated['image'] = $result['secure_url'];
         }
 
         $category->update($validated);
