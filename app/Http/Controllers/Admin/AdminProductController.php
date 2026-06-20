@@ -89,6 +89,11 @@ class AdminProductController extends BaseController
         $validated['is_available'] = $request->has('is_available');
         $validated['is_featured'] = $request->has('is_featured');
 
+        // Hapus gambar jika checkbox remove_image dicentang
+        if ($request->has('remove_image')) {
+            $validated['image'] = null;
+        }
+
         if ($request->hasFile('image')) {
             $uploadedFileUrl = cloudinary()->upload($request->file('image')->getRealPath(), [
                 'folder' => 'products'

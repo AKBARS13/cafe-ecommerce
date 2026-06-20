@@ -34,11 +34,19 @@
                 <div>
                     <label class="block text-sm font-semibold text-gray-700 mb-1">Gambar</label>
                     @if($category->image)
-                        <img src="{{ $category->image }}"
-                            class="w-20 h-20 rounded-lg object-cover mb-2">
+                        <div class="mb-2">
+                            <img src="{{ $category->image }}"
+                                class="w-20 h-20 rounded-lg object-cover mb-2">
+                            <label class="flex items-center text-sm">
+                                <input type="checkbox" name="remove_image" value="1"
+                                    class="rounded border-gray-300 text-red-600 focus:ring-red-500">
+                                <span class="ml-2 text-red-600">Hapus gambar (kembalikan ke default)</span>
+                            </label>
+                        </div>
                     @endif
                     <input type="file" name="image" accept="image/*"
                         class="w-full border border-gray-300 rounded-lg px-4 py-2">
+                    <p class="text-xs text-gray-500 mt-1">Upload gambar baru atau centang "Hapus gambar" untuk kembali ke default</p>
                 </div>
 
                 <label class="flex items-center">

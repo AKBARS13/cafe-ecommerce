@@ -61,6 +61,11 @@ class AdminCategoryController extends BaseController
         $validated['slug'] = Str::slug($validated['name']);
         $validated['is_active'] = $request->has('is_active');
 
+        // Hapus gambar jika checkbox remove_image dicentang
+        if ($request->has('remove_image')) {
+            $validated['image'] = null;
+        }
+
         if ($request->hasFile('image')) {
             $uploadedFileUrl = cloudinary()->upload($request->file('image')->getRealPath(), [
                 'folder' => 'categories'
