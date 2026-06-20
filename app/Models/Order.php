@@ -24,6 +24,10 @@ class Order extends BaseModel
         'customer_name',
         'customer_phone',
         'paid_at',
+        'payment_proof',
+        'bank_account_id',
+        'payment_verified_at',
+        'payment_rejection_reason',
     ];
 
     protected $casts = [
@@ -32,6 +36,7 @@ class Order extends BaseModel
         'discount' => 'decimal:2',
         'total_amount' => 'decimal:2',
         'paid_at' => 'datetime',
+        'payment_verified_at' => 'datetime',
         'reservation_date' => 'date',
     ];
 
@@ -58,6 +63,11 @@ class Order extends BaseModel
     public function table()
     {
         return $this->belongsTo(Table::class);
+    }
+
+    public function bankAccount()
+    {
+        return $this->belongsTo(BankAccount::class);
     }
 
     public function getStatusLabelAttribute(): string
@@ -92,11 +102,26 @@ class Order extends BaseModel
     {
         $labels = [
             'unpaid' => 'Belum Bayar',
+            'pending_verification' => 'Menunggu Verifikasi',
             'paid' => 'Sudah Bayar',
+            'rejected' => 'Ditolak',
             'refunded' => 'Dikembalikan',
         ];
 
         return $labels[$this->payment_status] ?? $this->payment_status;
+    }
+
+    public function getPaymentStatusColorAttribute(): string
+    {
+        $colors = [
+            'unpaid' => 'red',
+            'pending_verification' => 'yellow',
+            'paid' => 'green',
+            'rejected' => 'red',
+            'refunded' => 'gray',
+        ];
+
+        return $colors[$this->payment_status] ?? 'gray';
     }
 
     public function getOrderTypeLabelAttribute(): string

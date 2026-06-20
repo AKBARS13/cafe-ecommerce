@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BankAccount;
 use App\Models\CafeSetting;
 use App\Models\Table;
 use App\Services\CartService;
@@ -34,10 +35,11 @@ class CheckoutController extends BaseController
         $paymentMethods = PaymentFactory::getAvailableMethods();
         $cafeSetting = CafeSetting::current();
         $availableTables = Table::available()->orderBy('table_number')->get();
+        $bankAccounts = BankAccount::active()->get();
 
         return view('checkout.index', compact(
             'cartItems', 'total', 'tax', 'grandTotal', 'paymentMethods',
-            'cafeSetting', 'availableTables'
+            'cafeSetting', 'availableTables', 'bankAccounts'
         ));
     }
 
@@ -54,7 +56,10 @@ class CheckoutController extends BaseController
             'guest_count' => 'nullable|integer|min:1|max:20',
         ];
 
-        // Validasi spesifik per tipe order
+        if ($request->payment_method === 'transfer') {
+            $rules['bank_account_id'] = 'required|exists:bank_accounts,id';
+        }
+
         if ($request->order_type === 'dine_in' || $request->order_type === 'takeaway') {
             $rules['reservation_time'] = 'required|date_format:H:i';
             $rules['reservation_date'] = 'required|date|after_or_equal:today|before_or_equal:today';
@@ -69,7 +74,6 @@ class CheckoutController extends BaseController
 
         $validated = $request->validate($rules);
 
-        // Validasi jam untuk dine_in/takeaway harus dalam jam operasional
         if (in_array($request->order_type, ['dine_in', 'takeaway'])) {
             $time = $request->reservation_time;
             $openTime = date('H:i', strtotime($cafeSetting->open_time));

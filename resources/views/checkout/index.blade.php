@@ -82,9 +82,6 @@
                                 max="{{ now()->format('Y-m-d') }}"
                                 required
                                 class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500">
-                            @error('reservation_date')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Jam *</label>
@@ -92,9 +89,6 @@
                                 value="{{ now()->format('H:i') }}" required
                                 class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500">
                             <p class="text-xs text-gray-500 mt-1" id="time-info">Jam buka: {{ $cafeSetting->formatted_open_time }} - {{ $cafeSetting->formatted_close_time }}</p>
-                            @error('reservation_time')
-                                <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
-                            @enderror
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">Jumlah Tamu</label>
@@ -104,12 +98,12 @@
                     </div>
                 </div>
 
-                {{-- Info Meja Tersedia (untuk dine_in & reservation) --}}
+                {{-- Info Meja Tersedia --}}
                 <div class="bg-white rounded-xl shadow-md p-6" id="tables-info">
                     <h2 class="text-lg font-bold text-gray-800 mb-4">
                         <i class="fas fa-chair mr-2 text-amber-500"></i> Meja Tersedia
                     </h2>
-                    <p class="text-sm text-gray-500 mb-4">Berikut meja yang saat ini tersedia. <strong>Admin akan assign meja</strong> untuk Anda saat pesanan dikonfirmasi.</p>
+                    <p class="text-sm text-gray-500 mb-4">Admin akan assign meja saat pesanan dikonfirmasi.</p>
 
                     @if($availableTables->count() > 0)
                         <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
@@ -122,7 +116,7 @@
                             @endforeach
                         </div>
                     @else
-                        <p class="text-red-500 text-sm">Saat ini tidak ada meja tersedia. Anda tetap bisa melakukan reservasi.</p>
+                        <p class="text-red-500 text-sm">Saat ini tidak ada meja tersedia.</p>
                     @endif
                 </div>
 
@@ -132,21 +126,70 @@
                         <i class="fas fa-wallet mr-2 text-amber-500"></i> Metode Pembayaran
                     </h2>
                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        @foreach($paymentMethods as $key => $name)
+                        <label class="relative cursor-pointer">
+                            <input type="radio" name="payment_method" value="cash" checked class="sr-only peer" onchange="togglePaymentMethod(this.value)">
+                            <div class="border-2 border-gray-200 rounded-xl p-4 text-center peer-checked:border-amber-500 peer-checked:bg-amber-50 transition">
+                                <i class="fas fa-money-bill-wave text-2xl text-green-600 mb-2"></i>
+                                <p class="font-semibold text-sm">Tunai</p>
+                            </div>
+                        </label>
+                        @if($bankAccounts->count() > 0)
                             <label class="relative cursor-pointer">
-                                <input type="radio" name="payment_method" value="{{ $key }}" {{ $loop->first ? 'checked' : '' }} class="sr-only peer">
+                                <input type="radio" name="payment_method" value="transfer" class="sr-only peer" onchange="togglePaymentMethod(this.value)">
                                 <div class="border-2 border-gray-200 rounded-xl p-4 text-center peer-checked:border-amber-500 peer-checked:bg-amber-50 transition">
-                                    @if($key === 'cash')
-                                        <i class="fas fa-money-bill-wave text-2xl text-green-600 mb-2"></i>
-                                    @elseif($key === 'transfer')
-                                        <i class="fas fa-university text-2xl text-blue-600 mb-2"></i>
-                                    @else
-                                        <i class="fas fa-qrcode text-2xl text-purple-600 mb-2"></i>
-                                    @endif
-                                    <p class="font-semibold text-sm">{{ $name }}</p>
+                                    <i class="fas fa-university text-2xl text-blue-600 mb-2"></i>
+                                    <p class="font-semibold text-sm">Transfer Bank</p>
                                 </div>
                             </label>
-                        @endforeach
+                        @endif
+                        @if($cafeSetting->qris_enabled && $cafeSetting->qris_image)
+                            <label class="relative cursor-pointer">
+                                <input type="radio" name="payment_method" value="e_wallet" class="sr-only peer" onchange="togglePaymentMethod(this.value)">
+                                <div class="border-2 border-gray-200 rounded-xl p-4 text-center peer-checked:border-amber-500 peer-checked:bg-amber-50 transition">
+                                    <i class="fas fa-qrcode text-2xl text-purple-600 mb-2"></i>
+                                    <p class="font-semibold text-sm">QRIS</p>
+                                </div>
+                            </label>
+                        @endif
+                    </div>
+
+                    {{-- Pilih Bank (kalau transfer) --}}
+                    <div id="bank-options" class="mt-4 hidden">
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">Pilih Rekening Tujuan *</label>
+                        <div class="space-y-2">
+                            @foreach($bankAccounts as $bank)
+                                <label class="block border-2 border-gray-200 rounded-lg p-3 cursor-pointer hover:border-amber-500">
+                                    <input type="radio" name="bank_account_id" value="{{ $bank->id }}" class="sr-only peer">
+                                    <div class="peer-checked:font-bold flex items-center justify-between">
+                                        <div>
+                                            <p class="font-semibold">{{ $bank->bank_name }}</p>
+                                            <p class="text-sm text-gray-600 font-mono">{{ $bank->account_number }}</p>
+                                            <p class="text-xs text-gray-500">a.n. {{ $bank->account_holder }}</p>
+                                        </div>
+                                        <i class="fas fa-circle text-gray-300"></i>
+                                    </div>
+                                </label>
+                            @endforeach
+                        </div>
+                        <p class="text-xs text-amber-600 mt-2">
+                            <i class="fas fa-info-circle"></i> Setelah pesan, kamu perlu upload bukti transfer.
+                        </p>
+                    </div>
+
+                    {{-- QRIS Info --}}
+                    <div id="qris-info" class="mt-4 hidden">
+                        @if($cafeSetting->qris_image)
+                            <div class="bg-purple-50 border border-purple-200 rounded-lg p-4 text-center">
+                                <p class="text-sm font-semibold text-gray-700 mb-2">Scan QRIS untuk Bayar</p>
+                                <img src="{{ $cafeSetting->qris_image }}" class="w-48 h-48 mx-auto rounded-lg">
+                                @if($cafeSetting->qris_merchant_name)
+                                    <p class="text-sm font-bold mt-2">{{ $cafeSetting->qris_merchant_name }}</p>
+                                @endif
+                                <p class="text-xs text-amber-600 mt-2">
+                                    <i class="fas fa-info-circle"></i> Setelah pesan, kamu perlu upload bukti pembayaran.
+                                </p>
+                            </div>
+                        @endif
                     </div>
                 </div>
 
@@ -214,7 +257,6 @@
         reservationStart: "{{ date('H:i', strtotime($cafeSetting->reservation_start_time)) }}",
         reservationEnd: "{{ date('H:i', strtotime($cafeSetting->reservation_end_time)) }}",
         maxReservationDays: {{ $cafeSetting->max_reservation_days }},
-        acceptReservation: {{ $cafeSetting->accept_reservation ? 'true' : 'false' }}
     };
 
     const today = new Date().toISOString().split('T')[0];
@@ -229,7 +271,6 @@
         const tablesInfo = document.getElementById('tables-info');
 
         if (type === 'reservation') {
-            // Reservasi: bisa pilih sampai max_reservation_days hari
             dateInput.min = today;
             dateInput.max = maxReservationDateStr;
             timeInput.min = cafeSetting.reservationStart;
@@ -237,7 +278,6 @@
             timeInfo.innerText = `Jam reservasi: ${cafeSetting.reservationStart} - ${cafeSetting.reservationEnd}`;
             tablesInfo.style.display = 'block';
         } else if (type === 'dine_in') {
-            // Dine-in: hari ini saja, dalam jam operasional
             dateInput.min = today;
             dateInput.max = today;
             dateInput.value = today;
@@ -246,7 +286,6 @@
             timeInfo.innerText = `Jam buka: ${cafeSetting.openTime} - ${cafeSetting.closeTime}`;
             tablesInfo.style.display = 'block';
         } else {
-            // Takeaway: hari ini saja, dalam jam operasional
             dateInput.min = today;
             dateInput.max = today;
             dateInput.value = today;
@@ -257,7 +296,20 @@
         }
     }
 
-    // Init default state (dine_in)
+    function togglePaymentMethod(method) {
+        const bankOptions = document.getElementById('bank-options');
+        const qrisInfo = document.getElementById('qris-info');
+
+        bankOptions.classList.add('hidden');
+        qrisInfo.classList.add('hidden');
+
+        if (method === 'transfer') {
+            bankOptions.classList.remove('hidden');
+        } else if (method === 'e_wallet') {
+            qrisInfo.classList.remove('hidden');
+        }
+    }
+
     toggleOrderType('dine_in');
 </script>
 @endsection

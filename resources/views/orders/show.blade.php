@@ -15,6 +15,89 @@
         </a>
     </div>
 
+    {{-- Alert Payment Status --}}
+    @if($order->payment_status === 'pending_verification')
+        <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 mb-6 rounded-lg">
+            <p class="text-yellow-800 font-semibold">
+                <i class="fas fa-clock mr-2"></i> Bukti pembayaran sedang diverifikasi admin.
+            </p>
+        </div>
+    @elseif($order->payment_status === 'paid')
+        <div class="bg-green-50 border-l-4 border-green-500 p-4 mb-6 rounded-lg">
+            <p class="text-green-800 font-semibold">
+                <i class="fas fa-check-circle mr-2"></i> Pembayaran berhasil diverifikasi!
+            </p>
+        </div>
+    @elseif($order->payment_status === 'rejected')
+        <div class="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-lg">
+            <p class="text-red-800 font-semibold">
+                <i class="fas fa-times-circle mr-2"></i> Bukti pembayaran ditolak.
+            </p>
+            @if($order->payment_rejection_reason)
+                <p class="text-red-700 text-sm mt-1">Alasan: {{ $order->payment_rejection_reason }}</p>
+            @endif
+            <p class="text-red-700 text-sm mt-1">Silakan upload bukti pembayaran yang baru di bawah.</p>
+        </div>
+    @endif
+
+    {{-- Upload Bukti Pembayaran --}}
+    @if(in_array($order->payment_method, ['transfer', 'e_wallet']) && in_array($order->payment_status, ['unpaid', 'rejected']))
+        <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+            <h2 class="font-bold text-lg text-gray-800 mb-4">
+                <i class="fas fa-upload mr-2 text-amber-500"></i> Upload Bukti Pembayaran
+            </h2>
+
+            {{-- Info Pembayaran --}}
+            @if($order->payment_method === 'transfer' && $order->bankAccount)
+                <div class="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
+                    <p class="text-sm text-gray-600">Transfer ke:</p>
+                    <p class="font-bold text-lg">{{ $order->bankAccount->bank_name }}</p>
+                    <p class="font-mono text-xl text-blue-700">{{ $order->bankAccount->account_number }}</p>
+                    <p class="text-sm">a.n. {{ $order->bankAccount->account_holder }}</p>
+                    <p class="font-bold text-amber-600 mt-2">Nominal: Rp {{ number_format($order->total_amount, 0, ',', '.') }}</p>
+                </div>
+            @elseif($order->payment_method === 'e_wallet' && $cafeSetting->qris_image)
+                <div class="bg-purple-50 border border-purple-200 rounded-lg p-4 mb-4 text-center">
+                    <p class="text-sm text-gray-600 mb-2">Scan QRIS:</p>
+                    <img src="{{ $cafeSetting->qris_image }}" class="w-48 h-48 mx-auto rounded-lg">
+                    @if($cafeSetting->qris_merchant_name)
+                        <p class="font-bold mt-2">{{ $cafeSetting->qris_merchant_name }}</p>
+                    @endif
+                    <p class="font-bold text-amber-600 mt-2">Nominal: Rp {{ number_format($order->total_amount, 0, ',', '.') }}</p>
+                </div>
+            @endif
+
+            <form action="{{ route('orders.uploadProof', $order->id) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <div class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">Upload Bukti Pembayaran *</label>
+                        <input type="file" name="payment_proof" accept="image/*" required
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        <p class="text-xs text-gray-500 mt-1">Format: JPG, PNG, WEBP (max 5MB)</p>
+                        @error('payment_proof')
+                            <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
+
+                    <button type="submit" class="w-full bg-amber-600 text-white py-3 rounded-xl hover:bg-amber-500 transition font-bold">
+                        <i class="fas fa-upload mr-2"></i> Upload Bukti
+                    </button>
+                </div>
+            </form>
+        </div>
+    @endif
+
+    {{-- Bukti Pembayaran Yang Sudah Diupload --}}
+    @if($order->payment_proof && $order->payment_status === 'pending_verification')
+        <div class="bg-white rounded-xl shadow-md p-6 mb-6">
+            <h2 class="font-bold text-lg text-gray-800 mb-4">Bukti Pembayaran Anda</h2>
+            <a href="{{ $order->payment_proof }}" target="_blank">
+                <img src="{{ $order->payment_proof }}" class="rounded-lg max-w-sm mx-auto border-2 border-gray-200">
+            </a>
+        </div>
+    @endif
+
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
 
         <div class="bg-white rounded-xl shadow-md p-6">
@@ -34,7 +117,12 @@
                 </div>
                 <div class="flex justify-between">
                     <span class="text-gray-600">Status Bayar</span>
-                    <span class="px-3 py-1 rounded-full text-xs font-semibold {{ $order->payment_status === 'paid' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800' }}">
+                    <span class="px-3 py-1 rounded-full text-xs font-semibold
+                        @if($order->payment_status_color === 'green') bg-green-100 text-green-800
+                        @elseif($order->payment_status_color === 'yellow') bg-yellow-100 text-yellow-800
+                        @elseif($order->payment_status_color === 'red') bg-red-100 text-red-800
+                        @else bg-gray-100 text-gray-800
+                        @endif">
                         {{ $order->payment_status_label }}
                     </span>
                 </div>

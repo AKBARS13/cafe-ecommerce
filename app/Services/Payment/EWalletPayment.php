@@ -13,20 +13,28 @@ class EWalletPayment extends AbstractPaymentProcessor
         $this->adminFee = 0;
     }
 
-    protected function executePayment(Order $order, float $total, array $paymentData): array
+    public function processPayment(Order $order, array $paymentData): array
     {
-        $qrCode = 'CAFE-' . $order->order_number . '-' . time();
+        $order->update([
+            'payment_method' => 'e_wallet',
+            'payment_status' => 'unpaid',
+        ]);
 
         return [
             'success' => true,
-            'message' => 'Pembayaran e-wallet berhasil.',
+            'message' => 'Pesanan QRIS berhasil dibuat. Silakan scan QR dan upload bukti pembayaran.',
             'data' => [
-                'method' => 'E-Wallet',
-                'total' => $total,
-                'admin_fee' => $this->adminFee,
-                'wallet_type' => $paymentData['wallet_type'] ?? 'QRIS',
-                'qr_code' => $qrCode,
+                'method' => 'QRIS',
+                'total' => $order->total_amount,
             ]
+        ];
+    }
+
+    protected function executePayment(Order $order, float $total, array $paymentData): array
+    {
+        return [
+            'success' => true,
+            'message' => 'Pembayaran QRIS dicatat',
         ];
     }
 
@@ -37,11 +45,11 @@ class EWalletPayment extends AbstractPaymentProcessor
 
     public function getPaymentMethodName(): string
     {
-        return 'E-Wallet (QRIS)';
+        return 'QRIS / E-Wallet';
     }
 
     public function getPaymentInstructions(): string
     {
-        return 'Scan QR code QRIS menggunakan aplikasi e-wallet Anda (GoPay, OVO, DANA, ShopeePay, dll).';
+        return 'Scan QR Code QRIS, lakukan pembayaran, lalu upload bukti pembayaran.';
     }
 }

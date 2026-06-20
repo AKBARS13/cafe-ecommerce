@@ -13,19 +13,29 @@ class TransferPayment extends AbstractPaymentProcessor
         $this->adminFee = 0;
     }
 
+    public function processPayment(Order $order, array $paymentData): array
+    {
+        $order->update([
+            'payment_method' => 'transfer',
+            'payment_status' => 'unpaid',
+            'bank_account_id' => $paymentData['bank_account_id'] ?? null,
+        ]);
+
+        return [
+            'success' => true,
+            'message' => 'Pesanan transfer berhasil dibuat. Silakan transfer dan upload bukti pembayaran.',
+            'data' => [
+                'method' => 'Transfer Bank',
+                'total' => $order->total_amount,
+            ]
+        ];
+    }
+
     protected function executePayment(Order $order, float $total, array $paymentData): array
     {
         return [
             'success' => true,
-            'message' => 'Pembayaran transfer berhasil dicatat. Menunggu verifikasi.',
-            'data' => [
-                'method' => 'Transfer Bank',
-                'total' => $total,
-                'admin_fee' => $this->adminFee,
-                'bank' => 'BCA',
-                'account_number' => '1234567890',
-                'account_name' => 'Cafe Kopi Nusantara',
-            ]
+            'message' => 'Pembayaran transfer dicatat',
         ];
     }
 
@@ -41,6 +51,6 @@ class TransferPayment extends AbstractPaymentProcessor
 
     public function getPaymentInstructions(): string
     {
-        return 'Transfer ke rekening BCA 1234567890 a.n. Cafe Kopi Nusantara. Kirim bukti transfer ke kasir.';
+        return 'Transfer ke salah satu rekening yang tersedia, lalu upload bukti pembayaran.';
     }
 }

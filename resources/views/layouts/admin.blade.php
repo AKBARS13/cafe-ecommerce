@@ -39,8 +39,21 @@
                 <a href="{{ route('admin.orders.index') }}" class="flex items-center px-6 py-3 hover:bg-amber-800 transition {{ request()->routeIs('admin.orders.*') ? 'bg-amber-800 border-r-4 border-amber-300' : '' }}">
                     <i class="fas fa-receipt w-5 mr-3"></i> Pesanan
                 </a>
+                <a href="{{ route('admin.payments.index') }}" class="flex items-center px-6 py-3 hover:bg-amber-800 transition {{ request()->routeIs('admin.payments.*') ? 'bg-amber-800 border-r-4 border-amber-300' : '' }}">
+                    <i class="fas fa-money-check-alt w-5 mr-3"></i> Verifikasi Bayar
+                </a>
+
+                <hr class="border-amber-700 my-2 mx-6">
+                <p class="px-6 py-2 text-xs text-amber-300 uppercase">Pengaturan</p>
+
                 <a href="{{ route('admin.settings.index') }}" class="flex items-center px-6 py-3 hover:bg-amber-800 transition {{ request()->routeIs('admin.settings.*') ? 'bg-amber-800 border-r-4 border-amber-300' : '' }}">
-                    <i class="fas fa-cog w-5 mr-3"></i> Pengaturan
+                    <i class="fas fa-cog w-5 mr-3"></i> Info Cafe
+                </a>
+                <a href="{{ route('admin.bank-accounts.index') }}" class="flex items-center px-6 py-3 hover:bg-amber-800 transition {{ request()->routeIs('admin.bank-accounts.*') ? 'bg-amber-800 border-r-4 border-amber-300' : '' }}">
+                    <i class="fas fa-university w-5 mr-3"></i> Rekening Bank
+                </a>
+                <a href="{{ route('admin.qris.index') }}" class="flex items-center px-6 py-3 hover:bg-amber-800 transition {{ request()->routeIs('admin.qris.*') ? 'bg-amber-800 border-r-4 border-amber-300' : '' }}">
+                    <i class="fas fa-qrcode w-5 mr-3"></i> QRIS
                 </a>
 
                 <hr class="border-amber-700 my-4 mx-6">

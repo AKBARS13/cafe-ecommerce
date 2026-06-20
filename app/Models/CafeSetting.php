@@ -18,10 +18,15 @@ class CafeSetting extends BaseModel
         'cafe_address',
         'cafe_phone',
         'cafe_email',
+        'qris_image',
+        'qris_merchant_name',
+        'qris_instructions',
+        'qris_enabled',
     ];
 
     protected $casts = [
         'accept_reservation' => 'boolean',
+        'qris_enabled' => 'boolean',
     ];
 
     public function getDisplayName(): string
@@ -53,6 +58,7 @@ class CafeSetting extends BaseModel
                 'cafe_address' => 'Jl. Kopi No. 123, Jakarta',
                 'cafe_phone' => '+62 812 3456 7890',
                 'cafe_email' => 'info@cafekopinusantara.com',
+                'qris_enabled' => false,
             ]);
         }
 

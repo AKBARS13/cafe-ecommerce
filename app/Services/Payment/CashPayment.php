@@ -13,20 +13,29 @@ class CashPayment extends AbstractPaymentProcessor
         $this->adminFee = 0;
     }
 
-    protected function executePayment(Order $order, float $total, array $paymentData): array
+    public function processPayment(Order $order, array $paymentData): array
     {
-        $cashReceived = $paymentData['cash_received'] ?? $total;
-        $change = $cashReceived - $total;
+        // Cash langsung dianggap selesai (atau bisa unpaid sampai datang)
+        $order->update([
+            'payment_method' => 'cash',
+            'payment_status' => 'unpaid',
+        ]);
 
         return [
             'success' => true,
-            'message' => 'Pembayaran tunai berhasil',
+            'message' => 'Pesanan tunai berhasil dibuat. Silakan bayar di kasir.',
             'data' => [
                 'method' => 'Tunai',
-                'total' => $total,
-                'cash_received' => $cashReceived,
-                'change' => max(0, $change),
+                'total' => $order->total_amount,
             ]
+        ];
+    }
+
+    protected function executePayment(Order $order, float $total, array $paymentData): array
+    {
+        return [
+            'success' => true,
+            'message' => 'Pembayaran tunai berhasil',
         ];
     }
 
@@ -42,6 +51,6 @@ class CashPayment extends AbstractPaymentProcessor
 
     public function getPaymentInstructions(): string
     {
-        return 'Silakan bayar langsung di kasir dengan uang tunai.';
+        return 'Silakan bayar langsung di kasir dengan uang tunai saat datang.';
     }
 }
